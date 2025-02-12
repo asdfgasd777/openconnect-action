@@ -29,6 +29,7 @@ inputs:
 runs:
   using: 'docker'
   image: 'docker://asdfgasd777/openconnect-action:latest'
+  entrypoint: '/entrypoint.sh'
   args:
     - ${{ inputs.fortissl }}
     - ${{ inputs.user }}
