@@ -29,5 +29,11 @@ RUN make -j$(nproc)
 RUN make install && \
     ldconfig
 
+# Agregamos el script de entrada
+COPY entrypoint.sh /entrypoint.sh
+RUN chmod +x /entrypoint.sh
+
+WORKDIR /
+
 # Establecer el script de entrada
 ENTRYPOINT ["/entrypoint.sh"]
