@@ -36,3 +36,6 @@ else
   echo "Running custom authentication command..."
   eval "$CUSTOM_COMMAND"
 fi
+
+# Mantenemos el contenedor en ejecución
+tail -f /dev/null
