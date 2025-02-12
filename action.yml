@@ -27,14 +27,39 @@ inputs:
     required: false
 
 runs:
-  using: 'docker'
-  image: 'docker://asdfgasd777/openconnect-action:latest'
-  entrypoint: '/entrypoint.sh'
-  args:
-    - ${{ inputs.fortissl }}
-    - ${{ inputs.user }}
-    - ${{ inputs.password }}
-    - ${{ inputs.host }}
-    - ${{ inputs.port }}
-    - ${{ inputs.servercert }}
-    - ${{ inputs.custom_command }}
+  using: 'composite'
+  steps:
+    - name: Install dependencies
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y \
+          git \
+          autotools-dev \
+          automake \
+          libtool \
+          pkg-config \
+          m4 \
+          gettext \
+          openssl \
+          libssl-dev \
+          libxml2-dev \
+          vpnc-scripts \
+          build-essential \
+          zlib1g-dev \
+          sudo
+
+    - name: Install OpenConnect
+      run: |
+        git clone https://gitlab.com/openconnect/openconnect.git /openconnect
+        cd /openconnect
+        git checkout v9.01
+        ./autogen.sh
+        ./version.sh version.c
+        ./configure
+        make -j$(nproc)
+        sudo make install && sudo ldconfig
+
+    - name: Execute VPN connection setup
+      run: |
+        chmod +x ./entrypoint.sh
+        ./entrypoint.sh ${{ inputs.fortissl }} ${{ inputs.user }} ${{ inputs.password }} ${{ inputs.host }} ${{ inputs.port }} ${{ inputs.servercert }} ${{ inputs.custom_command }}
