@@ -29,6 +29,14 @@ inputs:
 runs:
   using: 'composite'
   steps:
+    - name: Cache OpenConnect dependencies
+      uses: actions/cache@v4
+      with:
+        path: /usr/local/lib /usr/local/include /usr/local/bin /usr/local/share
+        key: ${{ runner.os }}-openconnect-${{ hashFiles('**/openconnect') }}
+        restore-keys: |
+          ${{ runner.os }}-openconnect-
+
     - name: Install dependencies
       shell: bash
       run: |
