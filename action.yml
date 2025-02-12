@@ -30,6 +30,7 @@ runs:
   using: 'composite'
   steps:
     - name: Install dependencies
+      shell: bash
       run: |
         sudo apt-get update && \
         sudo apt-get install -y \
@@ -46,6 +47,7 @@ runs:
           vpnc-scripts 
 
     - name: Install OpenConnect
+      shell: bash
       run: |
         git clone https://gitlab.com/openconnect/openconnect.git
         cd openconnect
@@ -58,6 +60,7 @@ runs:
         sudo ldconfig
 
     - name: Execute VPN connection setup
+      shell: bash
       run: |
         chmod +x ./entrypoint.sh
         ./entrypoint.sh ${{ inputs.fortissl }} ${{ inputs.user }} ${{ inputs.password }} ${{ inputs.host }} ${{ inputs.port }} ${{ inputs.servercert }} ${{ inputs.custom_command }}
