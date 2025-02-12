@@ -28,7 +28,7 @@ inputs:
 
 runs:
   using: 'docker'
-  image: 'ghcr.io/your-username/openconnect-image:latest'
+  image: 'docker://asdfgasd777/openconnect-action:latest'
   args:
     - ${{ inputs.fortissl }}
     - ${{ inputs.user }}
