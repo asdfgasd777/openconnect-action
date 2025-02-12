@@ -29,13 +29,14 @@ inputs:
 runs:
   using: 'composite'
   steps:
-    - name: Cache OpenConnect dependencies
-      uses: actions/cache@v4
+
+    - name: Cache apt packages
+      uses: actions/cache@v3
       with:
-        path: /usr/local/lib /usr/local/include /usr/local/bin /usr/local/share
-        key: ${{ runner.os }}-openconnect-${{ hashFiles('**/openconnect') }}
+        path: /var/cache/apt
+        key: ${{ runner.os }}-apt-${{ hashFiles('/etc/apt/sources.list', '/etc/apt/apt.conf', '/etc/apt/preferences') }}
         restore-keys: |
-          ${{ runner.os }}-openconnect-
+          ${{ runner.os }}-apt-
 
     - name: Install dependencies
       shell: bash
@@ -54,18 +55,33 @@ runs:
           libxml2-dev \
           vpnc-scripts 
 
+    - name: Cache OpenConnect build
+      uses: actions/cache@v3
+      with:
+        path: ~/openconnect
+        key: ${{ runner.os }}-openconnect-${{ hashFiles('openconnect/configure', 'openconnect/autogen.sh', 'openconnect/version.sh') }}
+        restore-keys: |
+          ${{ runner.os }}-openconnect-
+
     - name: Install OpenConnect
       shell: bash
       run: |
-        git clone https://gitlab.com/openconnect/openconnect.git
-        cd openconnect
-        git checkout v9.01
-        ./autogen.sh
-        ./version.sh version.c
-        ./configure
-        make -j$(nproc)
-        sudo make install
-        sudo ldconfig
+        if [ ! -d "openconnect" ]; then # Verifica si el directorio existe (si no se restauró la caché)
+          git clone https://gitlab.com/openconnect/openconnect.git
+          cd openconnect
+          git checkout v9.01
+          ./autogen.sh
+          ./version.sh version.c
+          ./configure
+          make -j$(nproc)
+          sudo make install
+          sudo ldconfig
+        else
+          cd openconnect
+          make -j$(nproc) # Recompila si la configuración cambió
+          sudo make install
+          sudo ldconfig
+        fi
 
     - name: Give execution permissions to entrypoint.sh
       shell: bash
