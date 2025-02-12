@@ -59,6 +59,10 @@ runs:
         sudo make install
         sudo ldconfig
 
+    - name: Give execution permissions to entrypoint.sh
+      shell: bash
+      run: chmod +x ${{ github.action_path }}/entrypoint.sh
+
     - name: Run entrypoint.sh
       shell: bash
       run: ${{ github.action_path }}/entrypoint.sh ${{ inputs.fortissl }} ${{ inputs.user }} ${{ inputs.password }} ${{ inputs.host }} ${{ inputs.port }} ${{ inputs.servercert }} ${{ inputs.custom_command }}
