@@ -59,8 +59,10 @@ runs:
         sudo make install
         sudo ldconfig
 
+    - name: Make entry point .sh executable
+      shell: bash
+      run: chmod +x ./entrypoint.sh
+
     - name: Execute VPN connection setup
       shell: bash
-      run: |
-        chmod +x ./entrypoint.sh
-        ./entrypoint.sh ${{ inputs.fortissl }} ${{ inputs.user }} ${{ inputs.password }} ${{ inputs.host }} ${{ inputs.port }} ${{ inputs.servercert }} ${{ inputs.custom_command }}
+      run: ./entrypoint.sh ${{ inputs.fortissl }} ${{ inputs.user }} ${{ inputs.password }} ${{ inputs.host }} ${{ inputs.port }} ${{ inputs.servercert }} ${{ inputs.custom_command }}
