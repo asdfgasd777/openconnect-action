@@ -30,6 +30,10 @@ runs:
   using: 'composite'
   steps:
 
+    - name: Change apt cache directory permissions
+      shell: bash
+      run: sudo chmod -R a+rw /var/cache/apt
+
     - name: Cache apt packages
       uses: actions/cache@v3
       with:
@@ -53,16 +57,7 @@ runs:
           openssl \
           libssl-dev \
           libxml2-dev \
-          vpnc-scripts 
-
-    - name: Cache OpenConnect build
-      uses: actions/cache@v3
-      id: cache-openconnect
-      with:
-        path: ~/openconnect
-        key: ${{ runner.os }}-openconnect-${{ hashFiles('${{ steps.clone_openconnect.outputs.openconnect_path }}/configure', '${{ steps.clone_openconnect.outputs.openconnect_path }}/autogen.sh', '${{ steps.clone_openconnect.outputs.openconnect_path }}/version.sh') }}
-        restore-keys: |
-          ${{ runner.os }}-openconnect-
+          vpnc-scripts
 
     - name: Install OpenConnect
       id: clone_openconnect
@@ -86,6 +81,14 @@ runs:
           sudo make install
           sudo ldconfig
         fi
+
+    - name: Cache OpenConnect build
+      uses: actions/cache@v3
+      with:
+        path: ~/openconnect
+        key: ${{ runner.os }}-openconnect-${{ hashFiles('${{ steps.clone_openconnect.outputs.openconnect_path }}/configure', '${{ steps.clone_openconnect.outputs.openconnect_path }}/autogen.sh', '${{ steps.clone_openconnect.outputs.openconnect_path }}/version.sh') }}
+        restore-keys: |
+          ${{ runner.os }}-openconnect-
 
     - name: Give execution permissions to entrypoint.sh
       shell: bash
