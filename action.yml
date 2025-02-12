@@ -29,10 +29,6 @@ inputs:
 runs:
   using: 'composite'
   steps:
-    - name: Set GitHub Path
-      shell: bash
-      run: echo "${{ github.action_path }}" >> $GITHUB_PATH
-
     - name: Install dependencies
       shell: bash
       run: |
@@ -65,4 +61,4 @@ runs:
 
     - name: Run entrypoint.sh
       shell: bash
-      run: entrypoint.sh ${{ inputs.fortissl }} ${{ inputs.user }} ${{ inputs.password }} ${{ inputs.host }} ${{ inputs.port }} ${{ inputs.servercert }} ${{ inputs.custom_command }}
+      run: ${{ github.action_path }}/entrypoint.sh ${{ inputs.fortissl }} ${{ inputs.user }} ${{ inputs.password }} ${{ inputs.host }} ${{ inputs.port }} ${{ inputs.servercert }} ${{ inputs.custom_command }}
