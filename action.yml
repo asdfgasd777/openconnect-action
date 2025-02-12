@@ -1,0 +1,39 @@
+name: 'OpenConnect Action'
+description: 'Sets up OpenConnect VPN and connects to a VPN server.'
+inputs:
+  fortissl:
+    description: 'Set to true for FortiSSL VPN connection'
+    required: true
+    default: 'false'
+  user:
+    description: 'VPN Username (required for FortiSSL)'
+    required: false
+  password:
+    description: 'VPN Password (required for FortiSSL)'
+    required: false
+  host:
+    description: 'VPN Host (e.g., vpn.example.com)'
+    required: false
+  port:
+    description: 'VPN Port (default is 443)'
+    required: false
+    default: '443'
+  servercert:
+    description: 'Server certificate to validate the server (optional)'
+    required: false
+    default: ''
+  custom_command:
+    description: 'Custom authentication command (only used for FortiSSL)'
+    required: false
+
+runs:
+  using: 'docker'
+  image: 'ghcr.io/your-username/openconnect-image:latest'
+  args:
+    - ${{ inputs.fortissl }}
+    - ${{ inputs.user }}
+    - ${{ inputs.password }}
+    - ${{ inputs.host }}
+    - ${{ inputs.port }}
+    - ${{ inputs.servercert }}
+    - ${{ inputs.custom_command }}
