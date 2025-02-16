@@ -30,49 +30,12 @@ runs:
   using: 'composite'
   steps:
 
-    # - name: Change apt cache directory permissions
-    #   shell: bash
-    #   run: sudo chmod -R a+rw /var/cache/apt
-
-    # - name: Cache apt packages
-    #   uses: actions/cache@v3
-    #   with:
-    #     path: /var/cache/apt
-    #     key: ${{ runner.os }}-apt-${{ hashFiles('/etc/apt/sources.list', '/etc/apt/apt.conf', '/etc/apt/preferences') }}
-    #     restore-keys: |
-    #       ${{ runner.os }}-apt-
-
-    # - name: Install dependencies
-    #   shell: bash
-    #   run: |
-    #     sudo apt-get update && \
-    #     sudo apt-get install -y \
-    #       git \
-    #       autotools-dev \
-    #       automake \
-    #       libtool \
-    #       pkg-config \
-    #       m4 \
-    #       gettext \
-    #       openssl \
-    #       libssl-dev \
-    #       libxml2-dev \
-    #       vpnc-scripts
-
     - name: Install OpenConnect
-      id: clone_openconnect
+      id: install_openconnect
       shell: bash
       run: |
         sudo apt-get update && \
         sudo apt-get install -y openconnect
-
-    # - name: Cache OpenConnect build
-    #   uses: actions/cache@v3
-    #   with:
-    #     path: ~/openconnect
-    #     key: ${{ runner.os }}-openconnect-${{ hashFiles('${{ steps.clone_openconnect.outputs.openconnect_path }}/configure', '${{ steps.clone_openconnect.outputs.openconnect_path }}/autogen.sh', '${{ steps.clone_openconnect.outputs.openconnect_path }}/version.sh') }}
-    #     restore-keys: |
-    #       ${{ runner.os }}-openconnect-
 
     - name: Give execution permissions to entrypoint.sh
       shell: bash
@@ -81,3 +44,9 @@ runs:
     - name: Run entrypoint.sh
       shell: bash
       run: ${{ github.action_path }}/entrypoint.sh "${{ inputs.fortissl }}" "${{ inputs.user }}" "${{ inputs.password }}" "${{ inputs.host }}" "${{ inputs.port }}" "${{ inputs.servercert }}" "${{ inputs.custom_command }}"
+
+  post:
+    - name: Disconnect to VPN
+      shell: bash
+      run: |
+        sudo pkill openconnect
