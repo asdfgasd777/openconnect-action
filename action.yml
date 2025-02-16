@@ -44,9 +44,5 @@ runs:
     - name: Run entrypoint.sh
       shell: bash
       run: ${{ github.action_path }}/entrypoint.sh "${{ inputs.fortissl }}" "${{ inputs.user }}" "${{ inputs.password }}" "${{ inputs.host }}" "${{ inputs.port }}" "${{ inputs.servercert }}" "${{ inputs.custom_command }}"
-
-  post:
-    - name: Disconnect to VPN
-      shell: bash
-      run: |
+      post: |
         sudo pkill openconnect
