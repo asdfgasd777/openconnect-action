@@ -42,7 +42,8 @@ runs:
       run: chmod +x ${{ github.action_path }}/entrypoint.sh
 
     - name: Run entrypoint.sh
-      shell: bash
-      run: ${{ github.action_path }}/entrypoint.sh "${{ inputs.fortissl }}" "${{ inputs.user }}" "${{ inputs.password }}" "${{ inputs.host }}" "${{ inputs.port }}" "${{ inputs.servercert }}" "${{ inputs.custom_command }}"
-      post: |
-        sudo pkill openconnect
+      uses: gacts/run-and-post-run@v1
+      with:
+        run: ${{ github.action_path }}/entrypoint.sh "${{ inputs.fortissl }}" "${{ inputs.user }}" "${{ inputs.password }}" "${{ inputs.host }}" "${{ inputs.port }}" "${{ inputs.servercert }}" "${{ inputs.custom_command }}"
+        post: |
+          sudo pkill openconnect
