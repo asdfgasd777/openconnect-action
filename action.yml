@@ -25,6 +25,10 @@ inputs:
   custom_command:
     description: 'Custom authentication command (only used for FortiSSL)'
     required: false
+  timeout_minutes:
+    description: 'Login timeout'
+    required: true
+    default: 5
 
 runs:
   using: 'composite'
@@ -42,6 +46,7 @@ runs:
       run: chmod +x ${{ github.action_path }}/entrypoint.sh
 
     - name: Run entrypoint.sh
+      timeout-minutes: ${{ inputs.timeout_minutes }}
       uses: gacts/run-and-post-run@v1
       with:
         run: ${{ github.action_path }}/entrypoint.sh "${{ inputs.fortissl }}" "${{ inputs.user }}" "${{ inputs.password }}" "${{ inputs.host }}" "${{ inputs.port }}" "${{ inputs.servercert }}" "${{ inputs.custom_command }}"
